@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "spark-job.fullname" . }}-worker
+  labels:
+    {{- include "spark-job.labels" . | nindent 4 }}
+    app.kubernetes.io/component: worker
+spec:
+  replicas: {{ .Values.spark.worker.replicas }}
+  selector:
+    matchLabels:
+      {{- include "spark-job.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      labels:
+        {{- include "spark-job.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: worker
+    spec:
+      containers:
+        - name: spark-worker
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # Assuming the entrypoint or command needs to know where the master is.
+          # Ideally, SPARK_MASTER_URL env var or arguments are used.
+          command: ["/bin/bash", "-c", "/opt/bitnami/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://{{ include "spark-job.fullname" . }}-master:{{ .Values.spark.master.port }}"]
+          env:
+            - name: SPARK_MASTER_URL
+              value: "spark://{{ include "spark-job.fullname" . }}-master:{{ .Values.spark.master.port }}"
+          resources:
+            {{- toYaml .Values.spark.worker.resources | nindent 12 }}

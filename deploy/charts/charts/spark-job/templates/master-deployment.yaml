@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "spark-job.fullname" . }}-master
+  labels:
+    {{- include "spark-job.labels" . | nindent 4 }}
+    app.kubernetes.io/component: master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "spark-job.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: master
+  template:
+    metadata:
+      labels:
+        {{- include "spark-job.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: master
+    spec:
+      containers:
+        - name: spark-master
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/bash", "-c", "/opt/bitnami/spark/bin/spark-class org.apache.spark.deploy.master.Master"]
+          ports:
+            - name: spark-master
+              containerPort: {{ .Values.spark.master.port }}
+            - name: web-ui
+              containerPort: {{ .Values.spark.master.webUiPort }}
+          resources:
+            {{- toYaml .Values.spark.master.resources | nindent 12 }}

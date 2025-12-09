@@ -1,0 +1,30 @@
+image:
+  repository: my-registry/api-service
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 80
+
+route:
+  enabled: true
+  host: "api-service.example.com"
+  tls:
+    termination: edge
+
+oauth:
+  enabled: true
+  clientId: "api-service-client"
+  clientSecret: "secret"
+
+env:
+  sparkMasterUrl: "spark://spark-master:7077"
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

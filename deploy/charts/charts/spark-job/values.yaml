@@ -1,0 +1,29 @@
+image:
+  repository: bitnamilegacy/spark
+  pullPolicy: IfNotPresent
+  tag: "3.5.6"
+
+spark:
+  master:
+    port: 7077
+    webUiPort: 8080
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 500m
+        memory: 512Mi
+  worker:
+    replicas: 2
+    port: 8081
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 500m
+        memory: 512Mi
+
+service:
+  type: ClusterIP

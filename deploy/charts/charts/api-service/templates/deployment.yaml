@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "api-service.fullname" . }}
+  labels:
+    {{- include "api-service.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "api-service.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "api-service.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: api-service
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: SPARK_MASTER_URL
+              value: {{ tpl .Values.env.sparkMasterUrl . | quote }}
+            {{- if .Values.oauth.enabled }}
+            - name: OAUTH_CLIENT_ID
+              value: {{ .Values.oauth.clientId | quote }}
+            - name: OAUTH_CLIENT_SECRET
+              value: {{ .Values.oauth.clientSecret | quote }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

@@ -1,0 +1,14 @@
+tags:
+  install-spark: true
+  install-service: true
+
+# Global configurations or specific overrides can go here
+spark-job:
+  spark:
+    worker:
+      replicas: 2
+
+api-service:
+  env:
+    # Pointing to the spark master service within the same release
+    sparkMasterUrl: "spark://{{ .Release.Name }}-spark-job-master:7077"
