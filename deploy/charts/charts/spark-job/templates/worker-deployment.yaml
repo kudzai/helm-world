@@ -21,10 +21,9 @@ spec:
         - name: spark-worker
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          # Assuming the entrypoint or command needs to know where the master is.
-          # Ideally, SPARK_MASTER_URL env var or arguments are used.
-          command: ["/bin/bash", "-c", "/opt/bitnami/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://{{ include "spark-job.fullname" . }}-master:{{ .Values.spark.master.port }}"]
           env:
+            - name: SPARK_MODE
+              value: worker
             - name: SPARK_MASTER_URL
               value: "spark://{{ include "spark-job.fullname" . }}-master:{{ .Values.spark.master.port }}"
           resources:

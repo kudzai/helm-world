@@ -21,7 +21,9 @@ spec:
         - name: spark-master
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/bin/bash", "-c", "/opt/bitnami/spark/bin/spark-class org.apache.spark.deploy.master.Master"]
+          env:
+            - name: SPARK_MODE
+              value: master
           ports:
             - name: spark-master
               containerPort: {{ .Values.spark.master.port }}

@@ -16,3 +16,6 @@ Thumbs.db
 # Helm
 *.tgz
 *.lock
+
+.scripts
+.metals
