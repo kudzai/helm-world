@@ -42,7 +42,7 @@ spec:
       volumes:
         - name: global-config-vol
           configMap:
-            name: {{ .Values.global.configMapNames.settings }}
+            name: {{ .Values.global.externalConfigMaps.settings | default .Values.global.configMapNames.settings }}
         - name: app-config-vol
           configMap:
-            name: {{ .Values.global.configMapNames.appConfig }}
+            name: {{ .Values.global.externalConfigMaps.appConfig | default .Values.global.configMapNames.appConfig }}

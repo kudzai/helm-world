@@ -1,0 +1,10 @@
+apiVersion: v2
+name: domain-garage
+description: A domain-specific deployment using the base stack with custom configs.
+version: 0.1.0
+appVersion: "1.0.0"
+dependencies:
+  - name: full-stack
+    version: 0.1.0
+    repository: "file://../charts"
+    alias: base-stack

@@ -44,14 +44,21 @@ global:
   configMapNames:
     settings: "{{ .Release.Name }}-global-settings"
     appConfig: "{{ .Release.Name }}-app-config"
-
+    
+  # [Optional] External ConfigMaps reference
+  # If set, the chart will NOT create the ConfigMaps, but use these instead.
+  # This allows parent charts to provide their own configs.
+  externalConfigMaps:
+    settings: ""
+    appConfig: ""
 ```
 
 ### 3.2 ConfigMap Templates
-The umbrella chart will render these ConfigMaps.
+The umbrella chart will render these ConfigMaps **only if externalConfigMaps is not set**.
 
 **Templates/global-configmap.yaml**
 ```yaml
+{{- if not .Values.global.externalConfigMaps.settings }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -59,10 +66,12 @@ metadata:
 data:
   global.conf: |
 {{ .Files.Get "configs/global.conf" | indent 4 }}
+{{- end }}
 ```
 
 **Templates/app-configmap.yaml**
 ```yaml
+{{- if not .Values.global.externalConfigMaps.appConfig }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -70,6 +79,7 @@ metadata:
 data:
   application.conf: |
 {{ .Files.Get "configs/application.conf" | indent 4 }}
+{{- end }}
 ```
 
 ### 3.3 Consuming Configuration (Subcharts)
@@ -98,25 +108,48 @@ volumeMounts:
 volumes:
   - name: global-config-vol
     configMap:
-      name: {{ .Values.global.configMapNames.settings }}
+      # Use external map if provided, otherwise default to generated one
+      name: {{ .Values.global.externalConfigMaps.settings | default .Values.global.configMapNames.settings }}
   - name: app-config-vol
     configMap:
-      name: {{ .Values.global.configMapNames.appConfig }}
+      name: {{ .Values.global.externalConfigMaps.appConfig | default .Values.global.configMapNames.appConfig }}
 ```
 
-**Spark Job Consideration**:
-For Spark, mount both volumes.
-- **Spark Submit Flags**:
-  - Point to the app config: `--conf spark.driver.extraJavaOptions="-Dconfig.file=/etc/config/app/application.conf"`
-  - Ensure `application.conf` can resolve the include `/etc/config/global/global.conf`.
-- **K8s Volume Mounts**:
-  - `spark.kubernetes.driver.volumes.[hostPath/persistentVolumeClaim/emptyDir].name`? No, use ConfigMap volumes.
-  - `spark.kubernetes.driver.volumes.configMap.global-config.options.name={{ .Values.global.configMapNames.settings }}`
-  - `spark.kubernetes.driver.volumes.configMap.global-config.mount.path=/etc/config/global`
-  - Same for `app-config`.
+## 4. Domain Team Usage (Pattern)
 
-## 4. Work Plan
-1.  **Define Configuration Schema**: Finalize what keys go into Global vs App config.
-2.  **Create Umbrella Templates**: Add the two ConfigMap templates to `deploy/charts/templates/`.
-3.  **Update Umbrella Values**: Add default values for settings and app config.
-4.  **Update Subcharts**: Modify `spark-job` and `api-service` deployments to mount these maps.
+When a Domain Team depends on this chart, they should prevent the base chart from creating generic configs and instead inject their own.
+
+**Domain Chart Structure:**
+```
+domain-chart/
+├── Chart.yaml (dependencies: - name: base-chart)
+├── templates/
+│   ├── my-global-config.yaml
+│   └── my-app-config.yaml
+├── configs/
+│   ├── global.conf
+│   └── application.conf
+└── values.yaml
+```
+
+**Domain Chart `values.yaml`:**
+```yaml
+base-chart:
+  global:
+    externalConfigMaps:
+      settings: "my-domain-global-settings"
+      appConfig: "my-domain-app-config"
+```
+
+**Domain Chart `templates/my-global-config.yaml`:**
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-domain-global-settings
+data:
+  global.conf: |
+{{ .Files.Get "configs/global.conf" | indent 4 }}
+```
+
+This pattern allows the Domain Team to maintain their config files as real files in their source control, rather than strings in `values.yaml`.

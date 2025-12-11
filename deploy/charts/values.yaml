@@ -8,6 +8,11 @@ global:
     settings: "{{ .Release.Name }}-global-settings"
     appConfig: "{{ .Release.Name }}-app-config"
 
+  # Optional: Point to external ConfigMaps instead of generating them
+  externalConfigMaps:
+    settings: ""
+    appConfig: ""
+
 spark-job:
   spark:
     worker:
