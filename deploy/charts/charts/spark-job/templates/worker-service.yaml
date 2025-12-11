@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "spark-job.fullname" . }}-worker
+  labels:
+    {{- include "spark-job.labels" . | nindent 4 }}
+    app.kubernetes.io/component: worker
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.spark.worker.port }}
+      targetPort: web-ui
+      protocol: TCP
+      name: web-ui
+  selector:
+    {{- include "spark-job.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: worker

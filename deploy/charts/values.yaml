@@ -2,7 +2,12 @@ tags:
   install-spark: true
   install-service: true
 
-# Global configurations or specific overrides can go here
+# Global configurations sourced from deploy/charts/configs/
+global:
+  configMapNames:
+    settings: "{{ .Release.Name }}-global-settings"
+    appConfig: "{{ .Release.Name }}-app-config"
+
 spark-job:
   spark:
     worker:

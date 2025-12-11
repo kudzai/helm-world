@@ -26,5 +26,23 @@ spec:
               value: worker
             - name: SPARK_MASTER_URL
               value: "spark://{{ include "spark-job.fullname" . }}-master:{{ .Values.spark.master.port }}"
+          ports:
+            - name: web-ui
+              containerPort: {{ .Values.spark.worker.port }}
+              protocol: TCP
           resources:
             {{- toYaml .Values.spark.worker.resources | nindent 12 }}
+          volumeMounts:
+            - name: global-config-vol
+              mountPath: /etc/config/global
+              readOnly: true
+            - name: app-config-vol
+              mountPath: /etc/config/app
+              readOnly: true
+      volumes:
+        - name: global-config-vol
+          configMap:
+            name: {{ .Values.global.configMapNames.settings }}
+        - name: app-config-vol
+          configMap:
+            name: {{ .Values.global.configMapNames.appConfig }}

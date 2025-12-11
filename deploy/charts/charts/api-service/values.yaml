@@ -1,5 +1,5 @@
 image:
-  repository: my-registry/api-service
+  repository: kudzai/test-service
   pullPolicy: IfNotPresent
   tag: "latest"
 
@@ -9,7 +9,7 @@ service:
 
 route:
   enabled: true
-  host: "api-service.example.com"
+  host: ""
   tls:
     termination: edge
 

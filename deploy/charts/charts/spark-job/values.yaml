@@ -27,3 +27,12 @@ spark:
 
 service:
   type: ClusterIP
+
+route:
+  enabled: false
+  master:
+    host: spark-master.apps.example.com
+  worker:
+    host: spark-worker.apps.example.com
+  tls:
+    termination: edge

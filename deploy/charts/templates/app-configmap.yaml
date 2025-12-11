@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.global.configMapNames.appConfig }}
+data:
+  application.conf: |
+{{ .Files.Get "configs/application.conf" | indent 4 }}

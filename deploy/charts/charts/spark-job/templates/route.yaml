@@ -1,0 +1,35 @@
+{{- if .Values.route.enabled -}}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ include "spark-job.fullname" . }}-master-ui
+  labels:
+    {{- include "spark-job.labels" . | nindent 4 }}
+spec:
+  host: {{ .Values.route.master.host }}
+  to:
+    kind: Service
+    name: {{ include "spark-job.fullname" . }}-master
+    weight: 100
+  port:
+    targetPort: web-ui
+  tls:
+    termination: {{ .Values.route.tls.termination }}
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ include "spark-job.fullname" . }}-worker-ui
+  labels:
+    {{- include "spark-job.labels" . | nindent 4 }}
+spec:
+  host: {{ .Values.route.worker.host }}
+  to:
+    kind: Service
+    name: {{ include "spark-job.fullname" . }}-worker
+    weight: 100
+  port:
+    targetPort: web-ui
+  tls:
+    termination: {{ .Values.route.tls.termination }}
+{{- end }}

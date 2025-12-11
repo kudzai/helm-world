@@ -33,3 +33,17 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: global-config-vol
+              mountPath: /etc/config/global
+              readOnly: true
+            - name: app-config-vol
+              mountPath: /etc/config/app
+              readOnly: true
+      volumes:
+        - name: global-config-vol
+          configMap:
+            name: {{ .Values.global.configMapNames.settings }}
+        - name: app-config-vol
+          configMap:
+            name: {{ .Values.global.configMapNames.appConfig }}
