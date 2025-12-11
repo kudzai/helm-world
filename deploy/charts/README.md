@@ -95,3 +95,33 @@ The Spark Master UI runs on port 8080. Since the service is `ClusterIP` by defau
 
 2.  **Open in Browser:**
     Navigate to [http://localhost:8080](http://localhost:8080).
+
+
+## Example: Domain Garage Chart ("Bring Your Own Config")
+
+The `deploy/domain-garage` chart demonstrates how a domain team can use this stack while providing their own configurations, bypassing the default generic configs.
+
+### Key Concepts
+1.  **Dependency**: It depends on `deploy/charts` (aliased as `full-stack`).
+2.  **Values Override**: It sets `global.externalConfigMaps` to point to its own ConfigMaps.
+3.  **Custom Maps**: It defines `domain-garage-global-settings` and `domain-garage-app-config` in its templates.
+
+### deploying the Example
+
+1.  **Build Dependencies**:
+    Since the dependency is local (`file://../charts`), we must build it first.
+    ```bash
+    helm dependency build ./deploy/domain-garage
+    ```
+
+2.  **Verify Template (Dry Run)**:
+    Check that the generated manifest uses the domain-specific ConfigMaps.
+    ```bash
+    helm template ./deploy/domain-garage | grep "ConfigMap" -A 5
+    ```
+    *You should see `domain-garage-global-settings` and `domain-garage-app-config` being created and used.*
+
+3.  **Install**:
+    ```bash
+    helm install garage-stack ./deploy/domain-garage
+    ```
