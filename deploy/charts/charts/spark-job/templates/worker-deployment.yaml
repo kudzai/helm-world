@@ -24,6 +24,9 @@ spec:
           env:
             - name: SPARK_MODE
               value: worker
+            - name: SPARK_PUBLIC_DNS
+              value: {{ .Values.route.worker.host | quote }}
+            {{- include "spark-job.ssl.env" . | nindent 12 }}
             - name: SPARK_MASTER_URL
               value: "spark://{{ include "spark-job.fullname" . }}-master:{{ .Values.spark.master.port }}"
           ports:
@@ -36,9 +39,11 @@ spec:
             - name: config-vol
               mountPath: /etc/config
               readOnly: true
+            {{- include "spark-job.ssl.volumeMount" . | nindent 12 }}
       volumes:
         - name: config-vol
           projected:
             sources:
               - configMap: { name: {{ tpl (.Values.global.externalConfigMaps.settings | default .Values.global.configMapNames.settings) . | quote }} }
               - configMap: { name: {{ tpl (.Values.global.externalConfigMaps.appConfig | default .Values.global.configMapNames.appConfig) . | quote }} }
+        {{- include "spark-job.ssl.volume" . | nindent 8 }}

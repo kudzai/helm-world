@@ -49,3 +49,47 @@ Selector labels
 app.kubernetes.io/name: {{ include "spark-job.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+SSL Environment Variables
+*/}}
+{{- define "spark-job.ssl.env" -}}
+{{- if .Values.ssl.enabled }}
+- name: KEYSTORE_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.ssl.secretName | quote }}
+      key: {{ .Values.ssl.keystorePasswordKey | quote }}
+- name: TRUSTSTORE_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.ssl.secretName | quote }}
+      key: {{ .Values.ssl.truststorePasswordKey | quote }}
+- name: KEYSTORE_PATH
+  value: "/etc/secrets/spark/{{ .Values.ssl.keystoreFilename }}"
+- name: TRUSTSTORE_PATH
+  value: "/etc/secrets/spark/{{ .Values.ssl.truststoreFilename }}"
+{{- end }}
+{{- end }}
+
+{{/*
+SSL Volume Mount
+*/}}
+{{- define "spark-job.ssl.volumeMount" -}}
+{{- if .Values.ssl.enabled }}
+- name: secrets-vol
+  mountPath: /etc/secrets/spark
+  readOnly: true
+{{- end }}
+{{- end }}
+
+{{/*
+SSL Volume
+*/}}
+{{- define "spark-job.ssl.volume" -}}
+{{- if .Values.ssl.enabled }}
+- name: secrets-vol
+  secret:
+    secretName: {{ .Values.ssl.secretName | quote }}
+{{- end }}
+{{- end }}

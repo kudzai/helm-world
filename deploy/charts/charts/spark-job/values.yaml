@@ -31,8 +31,14 @@ service:
 route:
   enabled: false
   master:
-    host: spark-master.apps.example.com
+    host: ""
   worker:
-    host: spark-worker.apps.example.com
-  tls:
-    termination: edge
+    host: ""
+
+ssl:
+  enabled: true
+  secretName: "spark-tls-jks"
+  keystoreFilename: "keystore.jks"
+  truststoreFilename: "truststore.jks"
+  keystorePasswordKey: "KEYSTORE_PASSWORD"
+  truststorePasswordKey: "TRUSTSTORE_PASSWORD"
