@@ -14,6 +14,29 @@ The deployment uses an **Umbrella Chart** pattern:
 *   Helm v3+
 *   OpenShift CLI (`oc`) or `kubectl` configured with access to your cluster.
 
+## Enabling SSL/TLS
+
+To enable SSL for the API Service, you must provide a Kubernetes Secret containing your Keystore and Truststore files, along with their passwords.
+
+1.  **Create the Secret**:
+    ```bash
+    oc create secret generic my-cert-secret \
+      --from-file=keystore.jks=./my-keystore.jks \
+      --from-file=truststore.jks=./my-truststore.jks \
+      --from-literal=KEYSTORE_PASSWORD=changeit \
+      --from-literal=TRUSTSTORE_PASSWORD=changeit
+    ```
+
+2.  **Configure `values.yaml`**:
+    ```yaml
+    api-service:
+      ssl:
+        enabled: true
+        secretName: "my-cert-secret"
+        keystoreFilename: "keystore.jks"
+        truststoreFilename: "truststore.jks"
+    ```
+
 ## Deployment Scenarios
 
 ### 1. Full Stack Deployment (Default)

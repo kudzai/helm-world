@@ -36,15 +36,41 @@ spec:
             - name: OAUTH_CLIENT_SECRET
               value: {{ .Values.oauth.clientSecret | quote }}
             {{- end }}
+            {{- if .Values.ssl.enabled }}
+            - name: KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.ssl.secretName | quote }}
+                  key: {{ .Values.ssl.keystorePasswordKey | quote }}
+            - name: TRUSTSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.ssl.secretName | quote }}
+                  key: {{ .Values.ssl.truststorePasswordKey | quote }}
+            - name: KEYSTORE_PATH
+              value: "/etc/secrets/{{ .Values.ssl.keystoreFilename }}"
+            - name: TRUSTSTORE_PATH
+              value: "/etc/secrets/{{ .Values.ssl.truststoreFilename }}"
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: config-vol
               mountPath: /etc/config
               readOnly: true
+            {{- if .Values.ssl.enabled }}
+            - name: secrets-vol
+              mountPath: /etc/secrets
+              readOnly: true
+            {{- end }}
       volumes:
         - name: config-vol
           projected:
             sources:
               - configMap: { name: {{ tpl (.Values.global.externalConfigMaps.settings | default .Values.global.configMapNames.settings) . | quote }} }
               - configMap: { name: {{ tpl (.Values.global.externalConfigMaps.appConfig | default .Values.global.configMapNames.appConfig) . | quote }} }
+        {{- if .Values.ssl.enabled }}
+        - name: secrets-vol
+          secret:
+            secretName: {{ .Values.ssl.secretName | quote }}
+        {{- end }}

@@ -31,3 +31,12 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+
+ssl:
+  enabled: false
+  secretName: ""
+  keystoreFilename: "keystore.jks"
+  truststoreFilename: "truststore.jks"
+  # Keys in the secret containing the passwords
+  keystorePasswordKey: "KEYSTORE_PASSWORD"
+  truststorePasswordKey: "TRUSTSTORE_PASSWORD"
