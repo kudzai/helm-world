@@ -21,6 +21,9 @@ oauth:
 env:
   sparkMasterUrl: "spark://spark-master:7077"
 
+# External secret to load environment variables from (e.g. for application.conf)
+envFromSecret: ""
+
 resources:
   limits:
     cpu: 500m
