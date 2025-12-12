@@ -33,8 +33,8 @@ resources:
     memory: 128Mi
 
 ssl:
-  enabled: false
-  secretName: ""
+  enabled: true
+  secretName: "my-cert-secret"
   keystoreFilename: "keystore.jks"
   truststoreFilename: "truststore.jks"
   # Keys in the secret containing the passwords
