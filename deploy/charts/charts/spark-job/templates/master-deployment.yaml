@@ -32,16 +32,14 @@ spec:
           resources:
             {{- toYaml .Values.spark.master.resources | nindent 12 }}
           volumeMounts:
-            - name: global-config-vol
-              mountPath: /etc/config/global
-              readOnly: true
-            - name: app-config-vol
-              mountPath: /etc/config/app
+            - name: config-vol
+              mountPath: /etc/config
               readOnly: true
       volumes:
-        - name: global-config-vol
-          configMap:
-            name: {{ .Values.global.externalConfigMaps.settings | default .Values.global.configMapNames.settings }}
-        - name: app-config-vol
-          configMap:
-            name: {{ .Values.global.externalConfigMaps.appConfig | default .Values.global.configMapNames.appConfig }}
+        - name: config-vol
+          projected:
+            sources:
+              - configMap:
+                  name: {{ .Values.global.externalConfigMaps.settings | default .Values.global.configMapNames.settings }}
+              - configMap:
+                  name: {{ .Values.global.externalConfigMaps.appConfig | default .Values.global.configMapNames.appConfig }}
