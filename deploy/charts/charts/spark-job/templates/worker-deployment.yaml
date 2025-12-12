@@ -40,7 +40,5 @@ spec:
         - name: config-vol
           projected:
             sources:
-              - configMap:
-                  name: {{ .Values.global.externalConfigMaps.settings | default .Values.global.configMapNames.settings }}
-              - configMap:
-                  name: {{ .Values.global.externalConfigMaps.appConfig | default .Values.global.configMapNames.appConfig }}
+              - configMap: { name: {{ tpl (.Values.global.externalConfigMaps.settings | default .Values.global.configMapNames.settings) . | quote }} }
+              - configMap: { name: {{ tpl (.Values.global.externalConfigMaps.appConfig | default .Values.global.configMapNames.appConfig) . | quote }} }

@@ -18,7 +18,7 @@ object Main extends LazyLogging {
   def main(args: Array[String]): Unit = {
     logger.info("Starting API Service...")
 
-    val configPath = Paths.get("/etc/config/app/application.conf")
+    val configPath = Paths.get("/etc/config/application.conf")
     val configSource = ConfigSource.file(configPath)
     // Fallback to classpath
     val finalSource = configSource.optional.withFallback(ConfigSource.default)

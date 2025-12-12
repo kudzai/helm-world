@@ -1,9 +1,10 @@
-{{- if not .Values.global.externalConfigMaps.settings }}
+{{ if not .Values.global.externalConfigMaps.settings }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.global.configMapNames.settings }}
+  name: {{ tpl .Values.global.configMapNames.settings . | quote }}
 data:
   global.conf: |
 {{ .Files.Get "configs/global.conf" | indent 4 }}
-{{- end }}
+{{ end }}
+---
