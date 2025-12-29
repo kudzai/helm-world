@@ -36,6 +36,7 @@ spec:
             - name: OAUTH_CLIENT_SECRET
               value: {{ .Values.oauth.clientSecret | quote }}
             {{- end }}
+            {{- include "api-service.extraEnv" . | nindent 12 }}
             {{- if .Values.ssl.enabled }}
             - name: KEYSTORE_PASSWORD
               valueFrom:

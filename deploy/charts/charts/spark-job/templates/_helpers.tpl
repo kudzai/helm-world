@@ -93,3 +93,13 @@ SSL Volume
     secretName: {{ .Values.ssl.secretName | quote }}
 {{- end }}
 {{- end }}
+
+{{/*
+Extra Environment Variables
+*/}}
+{{- define "spark-job.extraEnv" -}}
+{{- range $key, $value := .Values.extraEnv }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+{{- end }}
+{{- end }}

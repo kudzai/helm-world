@@ -27,6 +27,7 @@ spec:
             - name: SPARK_PUBLIC_DNS
               value: {{ .Values.route.worker.host | quote }}
             {{- include "spark-job.ssl.env" . | nindent 12 }}
+            {{- include "spark-job.extraEnv" . | nindent 12 }}
             - name: SPARK_MASTER_URL
               value: "spark://{{ include "spark-job.fullname" . }}-master:{{ .Values.spark.master.port }}"
           ports:

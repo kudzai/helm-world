@@ -35,6 +35,8 @@ route:
   worker:
     host: ""
 
+extraEnv: {}
+
 ssl:
   enabled: true
   secretName: "spark-tls-jks"

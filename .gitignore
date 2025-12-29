@@ -20,3 +20,5 @@ Thumbs.db
 .scripts
 .metals
 .scalafmt.conf
+test-data/
+values-test.yaml

@@ -49,3 +49,13 @@ Selector labels
 app.kubernetes.io/name: {{ include "api-service.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Extra Environment Variables
+*/}}
+{{- define "api-service.extraEnv" -}}
+{{- range $key, $value := .Values.extraEnv }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+{{- end }}
+{{- end }}

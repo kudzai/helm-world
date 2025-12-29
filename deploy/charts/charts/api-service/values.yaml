@@ -24,6 +24,8 @@ env:
 # External secret to load environment variables from (e.g. for application.conf)
 envFromSecret: ""
 
+extraEnv: {}
+
 resources:
   limits:
     cpu: 500m
