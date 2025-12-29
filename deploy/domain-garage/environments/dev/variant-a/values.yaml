@@ -1,0 +1,8 @@
+base-stack:
+  api-service:
+    service:
+      port: 9090
+
+config:
+  environment: "dev"
+  variant: "variant-a"
