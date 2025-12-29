@@ -37,14 +37,6 @@ spec:
           resources:
             {{- toYaml .Values.spark.worker.resources | nindent 12 }}
           volumeMounts:
-            - name: config-vol
-              mountPath: /etc/config
-              readOnly: true
             {{- include "spark-job.ssl.volumeMount" . | nindent 12 }}
       volumes:
-        - name: config-vol
-          projected:
-            sources:
-              - configMap: { name: {{ tpl (.Values.global.externalConfigMaps.settings | default .Values.global.configMapNames.settings) . | quote }} }
-              - configMap: { name: {{ tpl (.Values.global.externalConfigMaps.appConfig | default .Values.global.configMapNames.appConfig) . | quote }} }
         {{- include "spark-job.ssl.volume" . | nindent 8 }}

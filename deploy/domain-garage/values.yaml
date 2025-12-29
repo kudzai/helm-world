@@ -1,5 +1,5 @@
 base-stack:
-  global:
+  api-service:
     externalConfigMaps:
       settings: "domain-garage-global-settings"
       appConfig: "domain-garage-app-config"

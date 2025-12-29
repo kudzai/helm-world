@@ -68,8 +68,9 @@ spec:
         - name: config-vol
           projected:
             sources:
-              - configMap: { name: {{ tpl (.Values.global.externalConfigMaps.settings | default .Values.global.configMapNames.settings) . | quote }} }
-              - configMap: { name: {{ tpl (.Values.global.externalConfigMaps.appConfig | default .Values.global.configMapNames.appConfig) . | quote }} }
+              - configMap: { name: {{ include "api-service.fullname" . }}-config }
+              - configMap: { name: {{ tpl (.Values.externalConfigMaps.settings | default .Values.configMapNames.settings) . | quote }} }
+              - configMap: { name: {{ tpl (.Values.externalConfigMaps.appConfig | default .Values.configMapNames.appConfig) . | quote }} }
         {{- if .Values.ssl.enabled }}
         - name: secrets-vol
           secret:
