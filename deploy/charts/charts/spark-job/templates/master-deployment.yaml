@@ -37,5 +37,7 @@ spec:
             {{- toYaml .Values.spark.master.resources | nindent 12 }}
           volumeMounts:
             {{- include "spark-job.ssl.volumeMount" . | nindent 12 }}
+            {{- include "spark-job.extraVolumeMounts" . | nindent 12 }}
       volumes:
         {{- include "spark-job.ssl.volume" . | nindent 8 }}
+        {{- include "spark-job.extraVolumes" . | nindent 8 }}

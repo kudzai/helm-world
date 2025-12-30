@@ -44,3 +44,6 @@ ssl:
   truststoreFilename: "truststore.jks"
   keystorePasswordKey: "KEYSTORE_PASSWORD"
   truststorePasswordKey: "TRUSTSTORE_PASSWORD"
+
+extraVolumes: []
+extraVolumeMounts: []

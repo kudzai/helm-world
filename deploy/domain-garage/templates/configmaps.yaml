@@ -17,3 +17,15 @@ metadata:
 data:
   application.conf: |
 {{ .Files.Get (printf "%s/application.conf" $path) | indent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-domain-garage-spark-config
+data:
+{{- $sparkPath := printf "environments/%s/%s/spark" $env $variant -}}
+{{- range $path, $_ := .Files.Glob (printf "%s/*" $sparkPath) }}
+  {{ base $path }}: |
+{{ $.Files.Get $path | indent 4 }}
+{{- end }}
+

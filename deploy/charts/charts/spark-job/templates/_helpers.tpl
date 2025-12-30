@@ -103,3 +103,20 @@ Extra Environment Variables
   value: {{ $value | quote }}
 {{- end }}
 {{- end }}
+
+{{/*
+Extra Volumes
+*/}}
+{{- define "spark-job.extraVolumes" -}}
+{{- if .Values.extraVolumes }}
+{{- toYaml .Values.extraVolumes }}
+{{- end }}
+{{- end }}
+
+{{/*
+Extra Volume Mounts
+*/}}
+{{- if .Values.extraVolumeMounts }}
+{{- toYaml .Values.extraVolumeMounts }}
+{{- end }}
+{{- end }}
