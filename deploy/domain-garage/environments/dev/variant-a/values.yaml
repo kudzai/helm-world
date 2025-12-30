@@ -2,6 +2,9 @@ base-stack:
   api-service:
     service:
       port: 9090
+    externalConfigMaps:
+      settings: "{{ .Release.Name }}-domain-garage-global-settings"
+      appConfig: "{{ .Release.Name }}-domain-garage-app-config"
 
 config:
   environment: "dev"

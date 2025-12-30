@@ -5,7 +5,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: domain-garage-global-settings
+  name: {{ .Release.Name }}-domain-garage-global-settings
 data:
   global.conf: |
 {{ .Files.Get (printf "%s/global.conf" $path) | indent 4 }}
@@ -13,7 +13,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: domain-garage-app-config
+  name: {{ .Release.Name }}-domain-garage-app-config
 data:
   application.conf: |
 {{ .Files.Get (printf "%s/application.conf" $path) | indent 4 }}
